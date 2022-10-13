@@ -84,4 +84,4 @@ class XJSON {
     }
 }
 
-module.exports = XJSON;
+module.exports = { XJSON };
