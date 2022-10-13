@@ -1,7 +1,7 @@
 XJSON
 =====
 
-Add circual reference auto solving capabilities to `JSON.parse()` and `JSON.stringify()` functions.
+Add circual reference auto solving capabilities to `JSON.parse()` and `JSON.stringify()` functions, licensed under MIT license.
 
 # Install
 ```bash
