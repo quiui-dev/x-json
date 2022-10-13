@@ -1,12 +1,22 @@
 const XJSON_REF = '$x_ref';
 
+/**
+ * Provides circular auto resolving capabilities to JSON.stringify() and JSON.parse() functions.
+ */
 class XJSON {
     static __JSON = JSON;
+    static __refChecker = new RegExp(`^\\${XJSON_REF}\\((\\d)\\)$`);
 
+    /**
+     * Replace global JSON object by XJSON, so JSON.parse() and JSON.stringify() will call XJSON.parse() and XJSON.stringify() respectively.
+     */
     static replaceJSON() {
         JSON = XJSON;
     }
 
+    /**
+     * Restore global JSON object to its normal.
+     */
     static restoreJSON() {
         JSON = XJSON.__JSON;
     }
@@ -39,28 +49,38 @@ class XJSON {
         });
 
         if (thereIsRefs)
-            XJSON.__xjson_set_refs(result, [], new RegExp(`^\\${XJSON_REF}\\((\\d)\\)$`));
+            XJSON.__setRefs(result, []);
     
         return result;
     }
 
-    static __xjson_set_refs(obj, refs, refChecker, prop) {
+    static __setRefs(obj, refs, prop) {
         const value = prop ? obj[prop] : obj;
     
         if (typeof value === 'object') {
-            if (refs.indexOf(value) === -1)
-                refs.push(value);
-    
-            for (const prop in value)
-                XJSON.__xjson_set_refs(value, refs, refChecker, prop);
-        } else if (typeof value === 'string') {
-            const ref = value.match(refChecker);
-            if ( ! ref)
-                return;
-    
-            const refIdx = Number(ref[1]);
-            obj[prop] = refs[refIdx];
-        }
+            XJSON.__cacheReference(value, refs);
+            XJSON.__recursivelySearchForRefs(value, refs);
+        } else if (typeof value === 'string')
+            XJSON.__resolveReference(value, obj, refs, prop);
+    }
+
+    static __cacheReference(obj, refs) {
+        if (refs.indexOf(obj) === -1)
+            refs.push(obj);
+    }
+
+    static __recursivelySearchForRefs(obj, refs) {
+        for (const prop in obj)
+            XJSON.__setRefs(obj, refs, prop);
+    }
+
+    static __resolveReference(value, obj, refs, prop) {
+        const isRef = value.match(XJSON.__refChecker);
+        if ( ! isRef)
+            return;
+
+        const refIdx = Number(isRef[1]);
+        obj[prop] = refs[refIdx];
     }
 }
 
