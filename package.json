@@ -1,0 +1,27 @@
+{
+  "name": "@quiui/x-json",
+  "version": "1.0.0",
+  "description": "easy to use JSON parse/stringify with circular reference auto solving",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quiui-dev/x-json.git"
+  },
+  "keywords": [
+    "json",
+    "circular-reference"
+  ],
+  "author": "Eng. Daniel Prado",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quiui-dev/x-json/issues"
+  },
+  "homepage": "https://github.com/quiui-dev/x-json#readme",
+  "devDependencies": {
+    "@types/jest": "^29.1.2",
+    "jest": "^29.1.2"
+  }
+}
